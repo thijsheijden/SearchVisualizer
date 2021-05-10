@@ -44,6 +44,7 @@ var (
 func main() {
 	go func() {
 		w := app.NewWindow(app.Size(unit.Px(1024), unit.Px(800)))
+		graphics.CreateNewGrid()
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
@@ -61,6 +62,7 @@ func loop(w *app.Window) error {
 			return e.Err
 		case system.FrameEvent:
 			graphics.HandleGridSizeChange()
+			graphics.HandleCellClicks(e.Queue)
 			gtx := layout.NewContext(&ops, e)
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Flexed(0.1, func(gtx C) D {

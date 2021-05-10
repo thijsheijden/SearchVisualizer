@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"gioui.org/font/gofont"
+	"gioui.org/io/event"
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -66,6 +67,7 @@ func HandleGridSizeChange() {
 			} else {
 				// Update the grid number of columns
 				gridColumns = val
+				CreateNewGrid()
 			}
 		}
 	}
@@ -78,6 +80,7 @@ func HandleGridSizeChange() {
 			} else {
 				// Update the grid number of rows
 				gridRows = val
+				CreateNewGrid()
 			}
 		}
 	}
@@ -94,4 +97,12 @@ func checkInputIsValid(input string) (bool, int) {
 		return false, 0
 	}
 	return true, intValue
+}
+
+func HandleCellClicks(q event.Queue) {
+	for _, cell := range grid {
+		for range q.Events(cell.tag) {
+			cell.wall = !cell.wall
+		}
+	}
 }
