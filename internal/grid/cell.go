@@ -8,10 +8,8 @@ import (
 
 // A Cell is a rectangle in the grid
 type Cell struct {
-	Tag    *bool // The tag for this cell, used for pointer events
-	Wall   bool  // Whether this cell is currently a wall
-	Start  bool  // Whether this cell is currently the starting point
-	Finish bool  // Whether this cell is currently the finish point
+	Tag      *bool    // The tag for this cell, used for pointer events
+	CellType CellType // The type of this cell
 }
 
 // A Point is a simple x, y coordinate
@@ -19,6 +17,20 @@ type Point struct {
 	x int
 	y int
 }
+
+// CellType is used to know what type a cell is
+type CellType int
+
+const (
+	// Empty denotes the empty cell
+	Empty CellType = iota
+	// Wall denotes a wall that the search algorithm can not go through
+	Wall
+	// Start denotes the starting point for the search algorithm
+	Start
+	// Finish denotes the goal for the search algo
+	Finish
+)
 
 // Possible cell colors
 var (
@@ -30,31 +42,12 @@ var (
 
 // Reset resets all attributes of a cell
 func (c *Cell) Reset() {
-	c.Finish = false
-	c.Start = false
-	c.Wall = false
+	c.CellType = Empty
 }
 
+// Clicked is triggered if a cell is simply clicked
 func (c *Cell) Clicked(button pointer.Buttons) {
 	switch button {
-	// Make the cell a wall
-	case pointer.ButtonPrimary:
-		prevWall := c.Wall
-		c.Reset()
-		c.Wall = !prevWall
-	// Make the cell the finish or start
-	case pointer.ButtonSecondary:
-		// If this cell is currently the start, make it the finish
-		if c.Start {
-			c.Start = false
-			c.Finish = true
-		} else if c.Finish {
-			// Reset the cell
-			c.Reset()
-		} else {
-			// Make this cell the start
-			c.Reset()
-			c.Start = true
-		}
+
 	}
 }

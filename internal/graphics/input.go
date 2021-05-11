@@ -106,11 +106,11 @@ func checkInputIsValid(input string) (bool, int) {
 func HandleCellClicks(q event.Queue) {
 	for _, cell := range grid.GridInstance.Cells {
 		for _, e := range q.Events(cell.Tag) {
-			log.Println(e)
 			if e, ok := e.(pointer.Event); ok {
 				switch e.Type {
 				case pointer.Press:
 					cell.Clicked(e.Buttons)
+					log.Println("Click")
 				}
 			}
 		}

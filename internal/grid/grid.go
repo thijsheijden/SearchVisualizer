@@ -2,9 +2,10 @@ package grid
 
 // A Grid contains the cells and keeps track of the start and finish cells
 type Grid struct {
-	Cells  []*Cell // The cells making up the grid
-	start  Point   // The starting point
-	finish Point   // The finishing point
+	Cells            []*Cell  // The cells making up the grid
+	start            Point    // The starting point
+	finish           Point    // The finishing point
+	CurrentlyPlacing CellType // The cell type we are currently placing down
 }
 
 // Grid variables
@@ -26,10 +27,8 @@ func New() {
 	for r := 0; r < Rows; r++ {
 		for c := 0; c < Columns; c++ {
 			cell := Cell{
-				Tag:    new(bool),
-				Wall:   false,
-				Start:  false,
-				Finish: false,
+				Tag:      new(bool),
+				CellType: Empty,
 			}
 			GridInstance.Cells[c+(Columns*r)] = &cell
 		}

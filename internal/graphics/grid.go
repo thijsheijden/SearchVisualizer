@@ -73,17 +73,18 @@ func colorBox(gtx C, size image.Point, r int, c int) D {
 	// 		Y: size.Y,
 	// 	}
 	// }
-	clip.Rect{Max: size}.Add(gtx.Ops)
-	if grid.GridInstance.Cells[c+(grid.Columns*r)].Wall {
-		paint.ColorOp{Color: grid.BlueCellColor}.Add(gtx.Ops)
-	} else if grid.GridInstance.Cells[c+(grid.Columns*r)].Finish {
-		paint.ColorOp{Color: grid.FinishCellColor}.Add(gtx.Ops)
-	} else if grid.GridInstance.Cells[c+(grid.Columns*r)].Start {
-		paint.ColorOp{Color: grid.StartCellColor}.Add(gtx.Ops)
-	} else {
-		paint.ColorOp{Color: grid.DefaultCellColor}.Add(gtx.Ops)
-	}
 
+	clip.Rect{Max: size}.Add(gtx.Ops)
+	switch grid.GridInstance.Cells[c+(grid.Columns*r)].CellType {
+	case grid.Empty:
+		paint.ColorOp{Color: grid.DefaultCellColor}.Add(gtx.Ops)
+	case grid.Wall:
+		paint.ColorOp{Color: grid.BlueCellColor}.Add(gtx.Ops)
+	case grid.Start:
+		paint.ColorOp{Color: grid.StartCellColor}.Add(gtx.Ops)
+	case grid.Finish:
+		paint.ColorOp{Color: grid.FinishCellColor}.Add(gtx.Ops)
+	}
 	paint.PaintOp{}.Add(gtx.Ops)
 
 	// Confine the area of interest to a 100x100 rectangle.
@@ -91,7 +92,7 @@ func colorBox(gtx C, size image.Point, r int, c int) D {
 	// Declare the tag.
 	pointer.InputOp{
 		Tag:   grid.GridInstance.Cells[c+(grid.Columns*r)].Tag,
-		Types: pointer.Press | pointer.Release | pointer.Drag | pointer.Enter | pointer.Leave,
+		Types: pointer.Press,
 	}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: size}
