@@ -1,10 +1,14 @@
 package graphics
 
 import (
+	"image/color"
+	"log"
+	"search-visualizer/internal/grid"
 	"strconv"
 
 	"gioui.org/font/gofont"
 	"gioui.org/io/event"
+	"gioui.org/io/pointer"
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -46,7 +50,7 @@ func (i inputFields) displayInputField(gtx C, input *widget.Editor) D {
 	e := material.Editor(i.theme, input, "25")
 	e.Editor.SingleLine = true
 	border := widget.Border{
-		Color:        red,
+		Color:        color.NRGBA{R: 0x77, G: 0xDD, B: 0x77, A: 0xFF},
 		CornerRadius: unit.Dp(4),
 		Width:        unit.Dp(1),
 	}
@@ -66,8 +70,8 @@ func HandleGridSizeChange() {
 				gridInputFields.nColumnsInput.Delete(-1)
 			} else {
 				// Update the grid number of columns
-				gridColumns = val
-				CreateNewGrid()
+				grid.Columns = val
+				grid.New()
 			}
 		}
 	}
@@ -79,8 +83,8 @@ func HandleGridSizeChange() {
 				gridInputFields.nRowsInput.Delete(-1)
 			} else {
 				// Update the grid number of rows
-				gridRows = val
-				CreateNewGrid()
+				grid.Rows = val
+				grid.New()
 			}
 		}
 	}
@@ -100,9 +104,15 @@ func checkInputIsValid(input string) (bool, int) {
 }
 
 func HandleCellClicks(q event.Queue) {
-	for _, cell := range grid {
-		for range q.Events(cell.tag) {
-			cell.wall = !cell.wall
+	for _, cell := range grid.GridInstance.Cells {
+		for _, e := range q.Events(cell.Tag) {
+			log.Println(e)
+			if e, ok := e.(pointer.Event); ok {
+				switch e.Type {
+				case pointer.Press:
+					cell.Clicked(e.Buttons)
+				}
+			}
 		}
 	}
 }

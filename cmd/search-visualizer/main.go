@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"search-visualizer/internal/graphics"
+	"search-visualizer/internal/grid"
 
 	"gioui.org/app"
 	"gioui.org/io/system"
@@ -44,7 +45,7 @@ var (
 func main() {
 	go func() {
 		w := app.NewWindow(app.Size(unit.Px(1024), unit.Px(800)))
-		graphics.CreateNewGrid()
+		grid.New()
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
@@ -61,9 +62,9 @@ func loop(w *app.Window) error {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:
-			graphics.HandleGridSizeChange()
-			graphics.HandleCellClicks(e.Queue)
 			gtx := layout.NewContext(&ops, e)
+			graphics.HandleGridSizeChange()
+			graphics.HandleCellClicks(gtx)
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Flexed(0.1, func(gtx C) D {
 					return graphics.GridRowColumnInput(gtx)
