@@ -36,7 +36,7 @@ func New() {
 			cell := Cell{
 				Tag:      new(bool),
 				CellType: Empty,
-				position: &Point{x: col, y: row},
+				Position: &Point{X: col, Y: row},
 			}
 			gridInstance.Cells[col+(Columns*row)] = &cell
 		}
@@ -46,4 +46,20 @@ func New() {
 // SetCellPaintType sets the type of cell that currently can be placed with the pointer
 func SetCellPaintType(t *CellType) {
 	gridInstance.CurrentlyPlacing = t
+}
+
+// GetCell gets a cell from the grid
+func GetCell(position Point) *Cell {
+	if position.X < Columns && position.Y < Rows {
+		return gridInstance.Cells[position.X+(Columns*position.Y)]
+	}
+	return nil
+}
+
+// GetStartCell gets the starting cell
+func GetStartCell() *Cell {
+	if gridInstance.start != nil {
+		return gridInstance.Cells[gridInstance.start.X+(Columns*gridInstance.start.Y)]
+	}
+	return nil
 }

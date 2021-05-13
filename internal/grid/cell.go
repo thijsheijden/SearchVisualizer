@@ -10,31 +10,41 @@ import (
 type Cell struct {
 	Tag      *bool    // The tag for this cell, used for pointer events
 	CellType CellType // The type of this cell
-	position *Point   // The position of this cell in the grid
+	Position *Point   // The position of this cell in the grid
 }
 
 // A Point is a simple x, y coordinate
 type Point struct {
-	x int
-	y int
+	X int
+	Y int
 }
 
 // CellType is used to know what type a cell is
 type CellType int
 
 const (
-	// Empty denotes the empty cell
-	Empty CellType = iota
+	// MARK: Paintable cell types
+
 	// Wall denotes a wall that the search algorithm can not go through
-	Wall
+	Wall CellType = iota
 	// Start denotes the starting point for the search algorithm
 	Start
 	// Finish denotes the goal for the search algo
 	Finish
+	// Empty denotes the empty cell
+	Empty
+
+	// MARK: Non-paintable cell types
+
+	// Visited denotes a cell that has been visited by the search algorithm
+	Visited
+
+	// Path denotes a cell that is part of the (current) shortest path
+	Path
 )
 
 func (t CellType) String() string {
-	return [...]string{"Empty", "Wall", "Start", "Finish"}[t]
+	return [...]string{"Wall", "Start", "Finish", "Empty"}[t]
 }
 
 // Possible cell colors
@@ -75,26 +85,26 @@ func (c *Cell) set() {
 		// Check if a start point has already been set
 		if gridInstance.start != nil {
 			// Remove the previous start point
-			gridInstance.Cells[gridInstance.start.x+(Columns*gridInstance.start.y)].CellType = Empty
+			gridInstance.Cells[gridInstance.start.X+(Columns*gridInstance.start.Y)].CellType = Empty
 		}
 
 		// Set this cell as the start
 		c.CellType = Start
 
 		// Set the start point to the position of this cell
-		gridInstance.start = c.position
+		gridInstance.start = c.Position
 	case Finish:
 		// Check if a finish point has already been set
 		if gridInstance.finish != nil {
 			// Remove the previous finish point
-			gridInstance.Cells[gridInstance.finish.x+(Columns*gridInstance.finish.y)].CellType = Empty
+			gridInstance.Cells[gridInstance.finish.X+(Columns*gridInstance.finish.Y)].CellType = Empty
 		}
 
 		// Set this cell as the finish
 		c.CellType = Finish
 
 		// Set the finish point to the position of this cell
-		gridInstance.finish = c.position
+		gridInstance.finish = c.Position
 	case Empty:
 		c.reset()
 	}
