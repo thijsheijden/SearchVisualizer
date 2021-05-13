@@ -10,6 +10,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -55,7 +56,7 @@ func (m *menu) displayInputWithLabel(gtx c, label *widget.Label, labelText strin
 	return layout.Inset{Top: unit.Dp(2), Bottom: unit.Dp(2)}.Layout(gtx, func(gtx c) d {
 		return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
 			layout.Flexed(1, func(gtx c) d {
-				return m.displayLabel(gtx, label, labelText)
+				return m.displayLabel(gtx, label, labelText, false)
 			}),
 			layout.Flexed(1, func(gtx c) d {
 				return m.displayInputField(gtx, input)
@@ -80,17 +81,27 @@ func (m *menu) displayInputField(gtx c, input *widget.Editor) d {
 	})
 }
 
-func (m *menu) displayLabel(gtx c, label *widget.Label, text string) d {
-	l := material.Label(m.theme, unit.Dp(14), text)
+func (m *menu) displayLabel(gtx c, label *widget.Label, labelText string, centered bool) d {
+	l := material.Label(m.theme, unit.Dp(14), labelText)
+	if centered {
+		l.Alignment = text.Middle
+	}
 	return layout.UniformInset(unit.Dp(4)).Layout(gtx, func(gtx c) d {
 		return l.Layout(gtx)
 	})
 }
 
 func (m *menu) displayCellPaintSquare(gtx c) d {
-	return layout.Center.Layout(gtx, func(gtx c) d {
-		return m.colorBox(gtx, gtx.Constraints.Max)
-	})
+	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+		layout.Flexed(0.8, func(gtx c) d {
+			return layout.Center.Layout(gtx, func(gtx c) d {
+				return m.colorBox(gtx, gtx.Constraints.Max)
+			})
+		}),
+		layout.Flexed(0.2, func(gtx c) d {
+			return m.displayLabel(gtx, m.cellPaintTypeLabel, m.cellPaintType.String(), true)
+		}),
+	)
 }
 
 func (m *menu) colorBox(gtx c, size image.Point) d {

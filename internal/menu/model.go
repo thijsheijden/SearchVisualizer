@@ -18,8 +18,9 @@ type menu struct {
 	tickSpeedInputLabel   *widget.Label
 
 	// The type of cell we are currently painting
-	cellPaintTag  *bool
-	cellPaintType grid.CellType
+	cellPaintTag       *bool
+	cellPaintType      grid.CellType
+	cellPaintTypeLabel *widget.Label
 }
 
 var topMenu menu
@@ -36,5 +37,6 @@ func New() {
 		tickSpeedInputLabel:   new(widget.Label),
 		cellPaintTag:          new(bool),
 		cellPaintType:         grid.Wall,
+		cellPaintTypeLabel:    new(widget.Label),
 	}
 }
