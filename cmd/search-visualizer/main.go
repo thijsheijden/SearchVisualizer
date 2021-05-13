@@ -64,7 +64,7 @@ func loop(w *app.Window) error {
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			// graphics.HandleGridSizeChange()
+			menu.HandleGridSizeChange()
 			// graphics.HandleCellClicks(gtx)
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Flexed(0.1, func(gtx C) D {
