@@ -1,8 +1,7 @@
-package graphics
+package grid
 
 import (
 	"image"
-	"search-visualizer/internal/grid"
 
 	"gioui.org/io/pointer"
 	"gioui.org/layout"
@@ -12,12 +11,17 @@ import (
 	"gioui.org/unit"
 )
 
-func DisplayGrid(gtx C) D {
+type (
+	c = layout.Context
+	d = layout.Dimensions
+)
+
+func Display(gtx c) d {
 	var rows []layout.FlexChild
-	for r := 0; r < grid.Rows; r++ {
-		f := drawRowFunc(gtx, r)
+	for row := 0; row < Rows; row++ {
+		f := drawRowFunc(gtx, row)
 		rows = append(rows,
-			layout.Flexed(grid.RowWeight, func(gtx C) D {
+			layout.Flexed(RowWeight, func(gtx c) d {
 				return f(gtx)
 			}),
 		)
@@ -27,30 +31,30 @@ func DisplayGrid(gtx C) D {
 		Left:   unit.Dp(8),
 		Right:  unit.Dp(8),
 		Bottom: unit.Dp(8),
-	}.Layout(gtx, func(gtx C) D {
+	}.Layout(gtx, func(gtx c) d {
 		return layout.Flex{Axis: layout.Vertical, Alignment: layout.Alignment(layout.Center)}.Layout(gtx, rows...)
 	})
 }
 
-func drawRowFunc(gtx C, r int) func(C) D {
-	return func(gtx C) D {
-		return drawRow(gtx, r)
+func drawRowFunc(gtx c, row int) func(c) d {
+	return func(gtx c) d {
+		return drawRow(gtx, row)
 	}
 }
 
-func drawBoxFunc(gtx C, size image.Point, r int, c int) func(C) D {
-	return func(gtx C) D {
-		return colorBox(gtx, gtx.Constraints.Max, r, c)
+func drawBoxFunc(gtx c, size image.Point, row int, col int) func(c) d {
+	return func(gtx c) d {
+		return colorBox(gtx, gtx.Constraints.Max, row, col)
 	}
 }
 
-func drawRow(gtx C, r int) D {
+func drawRow(gtx c, row int) d {
 	var columns []layout.FlexChild
-	for c := 0; c < grid.Columns; c++ {
-		f := drawBoxFunc(gtx, gtx.Constraints.Max, r, c)
+	for col := 0; col < Columns; col++ {
+		f := drawBoxFunc(gtx, gtx.Constraints.Max, row, col)
 		columns = append(columns,
-			layout.Flexed(grid.ColumnWeight, func(gtx C) D {
-				return layout.UniformInset(unit.Dp(2)).Layout(gtx, func(gtx C) D {
+			layout.Flexed(ColumnWeight, func(gtx c) d {
+				return layout.UniformInset(unit.Dp(2)).Layout(gtx, func(gtx c) d {
 					return f(gtx)
 				})
 			}),
@@ -59,7 +63,7 @@ func drawRow(gtx C, r int) D {
 	return layout.Flex{Axis: layout.Horizontal}.Layout(gtx, columns...)
 }
 
-func colorBox(gtx C, size image.Point, r int, c int) D {
+func colorBox(gtx c, size image.Point, r int, c int) d {
 	defer op.Save(gtx.Ops).Load()
 	// var newSize image.Point
 	// if size.X < size.Y {
@@ -75,15 +79,15 @@ func colorBox(gtx C, size image.Point, r int, c int) D {
 	// }
 
 	clip.Rect{Max: size}.Add(gtx.Ops)
-	switch grid.GridInstance.Cells[c+(grid.Columns*r)].CellType {
-	case grid.Empty:
-		paint.ColorOp{Color: grid.DefaultCellColor}.Add(gtx.Ops)
-	case grid.Wall:
-		paint.ColorOp{Color: grid.BlueCellColor}.Add(gtx.Ops)
-	case grid.Start:
-		paint.ColorOp{Color: grid.StartCellColor}.Add(gtx.Ops)
-	case grid.Finish:
-		paint.ColorOp{Color: grid.FinishCellColor}.Add(gtx.Ops)
+	switch gridInstance.Cells[c+(Columns*r)].CellType {
+	case Empty:
+		paint.ColorOp{Color: DefaultCellColor}.Add(gtx.Ops)
+	case Wall:
+		paint.ColorOp{Color: BlueCellColor}.Add(gtx.Ops)
+	case Start:
+		paint.ColorOp{Color: StartCellColor}.Add(gtx.Ops)
+	case Finish:
+		paint.ColorOp{Color: FinishCellColor}.Add(gtx.Ops)
 	}
 	paint.PaintOp{}.Add(gtx.Ops)
 
@@ -91,7 +95,7 @@ func colorBox(gtx C, size image.Point, r int, c int) D {
 	pointer.Rect(image.Rect(0, 0, 100, 100)).Add(gtx.Ops)
 	// Declare the tag.
 	pointer.InputOp{
-		Tag:   grid.GridInstance.Cells[c+(grid.Columns*r)].Tag,
+		Tag:   gridInstance.Cells[c+(Columns*r)].Tag,
 		Types: pointer.Press,
 	}.Add(gtx.Ops)
 

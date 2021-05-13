@@ -16,21 +16,21 @@ var (
 	ColumnWeight float32 = 1 / float32(Columns)
 )
 
-// GridInstance is the used instance of a Grid
-var GridInstance Grid
+// gridInstance is the used instance of a Grid
+var gridInstance Grid
 
 // New creates a new grid instance
 func New() {
-	GridInstance = Grid{
+	gridInstance = Grid{
 		Cells: make([]*Cell, Rows*Columns, Rows*Columns),
 	}
-	for r := 0; r < Rows; r++ {
-		for c := 0; c < Columns; c++ {
+	for row := 0; row < Rows; row++ {
+		for col := 0; col < Columns; col++ {
 			cell := Cell{
 				Tag:      new(bool),
 				CellType: Empty,
 			}
-			GridInstance.Cells[c+(Columns*r)] = &cell
+			gridInstance.Cells[col+(Columns*row)] = &cell
 		}
 	}
 }

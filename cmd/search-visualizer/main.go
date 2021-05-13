@@ -4,7 +4,6 @@ import (
 	"image/color"
 	"log"
 	"os"
-	"search-visualizer/internal/graphics"
 	"search-visualizer/internal/grid"
 	"search-visualizer/internal/menu"
 
@@ -71,7 +70,7 @@ func loop(w *app.Window) error {
 					return menu.Display(gtx)
 				}),
 				layout.Flexed(0.9, func(gtx C) D {
-					return graphics.DisplayGrid(gtx)
+					return grid.Display(gtx)
 				}),
 			)
 			e.Frame(gtx.Ops)
