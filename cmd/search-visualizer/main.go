@@ -45,7 +45,6 @@ var (
 func main() {
 	go func() {
 		w := app.NewWindow(app.Size(unit.Px(1024), unit.Px(800)))
-		grid.New()
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
@@ -57,6 +56,8 @@ func main() {
 func loop(w *app.Window) error {
 	var ops op.Ops
 	menu.New()
+	grid.New()
+	menu.PassCellTypeToGrid()
 	for e := range w.Events() {
 		switch e := e.(type) {
 		case system.DestroyEvent:

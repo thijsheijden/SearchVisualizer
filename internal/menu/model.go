@@ -40,3 +40,8 @@ func New() {
 		cellPaintTypeLabel:    new(widget.Label),
 	}
 }
+
+// PassCellTypeToGrid passes the memory address of the celltype in the menu to the grid
+func PassCellTypeToGrid() {
+	grid.SetCellPaintType(&topMenu.cellPaintType)
+}

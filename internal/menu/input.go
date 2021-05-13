@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"log"
 	"search-visualizer/internal/grid"
 	"strconv"
 
@@ -23,7 +22,6 @@ func handleCellPaintTypeChange(gtx c) {
 			if topMenu.cellPaintType > 3 {
 				topMenu.cellPaintType = 0
 			}
-			log.Println(topMenu.cellPaintType.String())
 		}
 	}
 }

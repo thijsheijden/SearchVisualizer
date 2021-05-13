@@ -2,7 +2,6 @@ package grid
 
 import (
 	"image/color"
-	"log"
 
 	"gioui.org/io/pointer"
 )
@@ -11,6 +10,7 @@ import (
 type Cell struct {
 	Tag      *bool    // The tag for this cell, used for pointer events
 	CellType CellType // The type of this cell
+	position *Point   // The position of this cell in the grid
 }
 
 // A Point is a simple x, y coordinate
@@ -45,8 +45,14 @@ var (
 	BlueCellColor    = color.NRGBA{R: 0x40, G: 0x40, B: 0xC0, A: 0xFF}
 )
 
-// Reset resets all attributes of a cell
-func (c *Cell) Reset() {
+// reset resets all attributes of a cell
+func (c *Cell) reset() {
+	// Check if this is a start or finish cell
+	if c.CellType == Start {
+		gridInstance.start = nil
+	} else if c.CellType == Finish {
+		gridInstance.finish = nil
+	}
 	c.CellType = Empty
 }
 
@@ -54,8 +60,42 @@ func (c *Cell) Reset() {
 func (c *Cell) Clicked(button pointer.Buttons) {
 	switch button {
 	case pointer.ButtonPrimary:
-		log.Println("Left click")
+		c.set()
 	case pointer.ButtonSecondary:
-		log.Println("Right click")
+		c.reset()
+	}
+}
+
+// set sets the cell to the currently selected type
+func (c *Cell) set() {
+	switch *gridInstance.CurrentlyPlacing {
+	case Wall:
+		c.CellType = Wall
+	case Start:
+		// Check if a start point has already been set
+		if gridInstance.start != nil {
+			// Remove the previous start point
+			gridInstance.Cells[gridInstance.start.x+(Columns*gridInstance.start.y)].CellType = Empty
+		}
+
+		// Set this cell as the start
+		c.CellType = Start
+
+		// Set the start point to the position of this cell
+		gridInstance.start = c.position
+	case Finish:
+		// Check if a finish point has already been set
+		if gridInstance.finish != nil {
+			// Remove the previous finish point
+			gridInstance.Cells[gridInstance.finish.x+(Columns*gridInstance.finish.y)].CellType = Empty
+		}
+
+		// Set this cell as the finish
+		c.CellType = Finish
+
+		// Set the finish point to the position of this cell
+		gridInstance.finish = c.position
+	case Empty:
+		c.reset()
 	}
 }

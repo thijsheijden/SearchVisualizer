@@ -65,18 +65,6 @@ func drawRow(gtx c, row int) d {
 
 func colorBox(gtx c, size image.Point, r int, c int) d {
 	defer op.Save(gtx.Ops).Load()
-	// var newSize image.Point
-	// if size.X < size.Y {
-	// 	newSize = image.Point{
-	// 		X: size.X,
-	// 		Y: size.X,
-	// 	}
-	// } else {
-	// 	newSize = image.Point{
-	// 		X: size.Y,
-	// 		Y: size.Y,
-	// 	}
-	// }
 
 	clip.Rect{Max: size}.Add(gtx.Ops)
 	switch gridInstance.Cells[c+(Columns*r)].CellType {
