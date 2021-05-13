@@ -6,6 +6,7 @@ import (
 	"os"
 	"search-visualizer/internal/graphics"
 	"search-visualizer/internal/grid"
+	"search-visualizer/internal/menu"
 
 	"gioui.org/app"
 	"gioui.org/io/system"
@@ -56,18 +57,18 @@ func main() {
 
 func loop(w *app.Window) error {
 	var ops op.Ops
-	graphics.CreateGridSizeInputFields()
+	menu.New()
 	for e := range w.Events() {
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			graphics.HandleGridSizeChange()
-			graphics.HandleCellClicks(gtx)
+			// graphics.HandleGridSizeChange()
+			// graphics.HandleCellClicks(gtx)
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Flexed(0.1, func(gtx C) D {
-					return graphics.GridRowColumnInput(gtx)
+					return menu.Display(gtx)
 				}),
 				layout.Flexed(0.9, func(gtx C) D {
 					return graphics.DisplayGrid(gtx)
