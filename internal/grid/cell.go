@@ -2,6 +2,7 @@ package grid
 
 import (
 	"image/color"
+	"log"
 
 	"gioui.org/io/pointer"
 )
@@ -32,6 +33,10 @@ const (
 	Finish
 )
 
+func (t CellType) String() string {
+	return [...]string{"Empty", "Wall", "Start", "Finish"}[t]
+}
+
 // Possible cell colors
 var (
 	DefaultCellColor = color.NRGBA{R: 0xEC, G: 0xEC, B: 0xEC, A: 0xFF}
@@ -48,6 +53,9 @@ func (c *Cell) Reset() {
 // Clicked is triggered if a cell is simply clicked
 func (c *Cell) Clicked(button pointer.Buttons) {
 	switch button {
-
+	case pointer.ButtonPrimary:
+		log.Println("Left click")
+	case pointer.ButtonSecondary:
+		log.Println("Right click")
 	}
 }

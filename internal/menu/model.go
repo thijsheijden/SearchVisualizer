@@ -1,6 +1,8 @@
 package menu
 
 import (
+	"search-visualizer/internal/grid"
+
 	"gioui.org/font/gofont"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -14,6 +16,10 @@ type menu struct {
 	gridRowsInputLabel    *widget.Label
 	tickSpeedInput        *widget.Editor
 	tickSpeedInputLabel   *widget.Label
+
+	// The type of cell we are currently painting
+	cellPaintTag  *bool
+	cellPaintType grid.CellType
 }
 
 var topMenu menu
@@ -28,5 +34,7 @@ func New() {
 		gridRowsInputLabel:    new(widget.Label),
 		tickSpeedInput:        new(widget.Editor),
 		tickSpeedInputLabel:   new(widget.Label),
+		cellPaintTag:          new(bool),
+		cellPaintType:         grid.Wall,
 	}
 }

@@ -1,14 +1,35 @@
 package menu
 
 import (
+	"log"
 	"search-visualizer/internal/grid"
 	"strconv"
 
+	"gioui.org/io/pointer"
 	"gioui.org/widget"
 )
 
+// HandleInput handles input regarding the top menu
+func HandleInput(gtx c) {
+	handleGridSizeChange()
+	handleCellPaintTypeChange(gtx)
+}
+
+func handleCellPaintTypeChange(gtx c) {
+	for _, e := range gtx.Events(topMenu.cellPaintTag) {
+		if _, ok := e.(pointer.Event); ok {
+			// Change the cell type
+			topMenu.cellPaintType++
+			if topMenu.cellPaintType > 3 {
+				topMenu.cellPaintType = 0
+			}
+			log.Println(topMenu.cellPaintType.String())
+		}
+	}
+}
+
 // Handle inputs for the number of columns and rows editors
-func HandleGridSizeChange() {
+func handleGridSizeChange() {
 	for _, e := range topMenu.gridColumnsInput.Events() {
 		switch e.(type) {
 		case widget.ChangeEvent:

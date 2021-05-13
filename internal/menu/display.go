@@ -1,9 +1,15 @@
 package menu
 
 import (
+	"image"
 	"image/color"
+	"search-visualizer/internal/grid"
 
+	"gioui.org/io/pointer"
 	"gioui.org/layout"
+	"gioui.org/op"
+	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -19,7 +25,15 @@ type (
 func Display(gtx c) d {
 	// Uniformly inset the entire menu by 8 dp
 	return layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx c) d {
-		return topMenu.displayAllInputsWithLabels(gtx)
+		return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+			layout.Flexed(1, func(gtx c) d {
+				return topMenu.displayAllInputsWithLabels(gtx)
+			}),
+			layout.Flexed(1, func(gtx c) d {
+				return topMenu.displayCellPaintSquare(gtx)
+			}),
+		)
+
 	})
 }
 
@@ -31,11 +45,14 @@ func (m *menu) displayAllInputsWithLabels(gtx c) d {
 		layout.Flexed(1, func(gtx c) d {
 			return m.displayInputWithLabel(gtx, m.gridRowsInputLabel, "Rows", m.gridRowsInput)
 		}),
+		layout.Flexed(1, func(gtx c) d {
+			return m.displayInputWithLabel(gtx, m.tickSpeedInputLabel, "Tick speed", m.tickSpeedInput)
+		}),
 	)
 }
 
 func (m *menu) displayInputWithLabel(gtx c, label *widget.Label, labelText string, input *widget.Editor) d {
-	return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx c) d {
+	return layout.Inset{Top: unit.Dp(2), Bottom: unit.Dp(2)}.Layout(gtx, func(gtx c) d {
 		return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
 			layout.Flexed(1, func(gtx c) d {
 				return m.displayLabel(gtx, label, labelText)
@@ -68,4 +85,45 @@ func (m *menu) displayLabel(gtx c, label *widget.Label, text string) d {
 	return layout.UniformInset(unit.Dp(4)).Layout(gtx, func(gtx c) d {
 		return l.Layout(gtx)
 	})
+}
+
+func (m *menu) displayCellPaintSquare(gtx c) d {
+	return layout.Center.Layout(gtx, func(gtx c) d {
+		return m.colorBox(gtx, gtx.Constraints.Max)
+	})
+}
+
+func (m *menu) colorBox(gtx c, size image.Point) d {
+	defer op.Save(gtx.Ops).Load()
+
+	// Make it a square
+	var squareSize image.Point
+	if size.X < size.Y {
+		squareSize = image.Point{X: size.X, Y: size.X}
+	} else {
+		squareSize = image.Point{X: size.Y, Y: size.Y}
+	}
+
+	clip.Rect{Max: squareSize}.Add(gtx.Ops)
+	switch m.cellPaintType {
+	case grid.Empty:
+		paint.ColorOp{Color: grid.DefaultCellColor}.Add(gtx.Ops)
+	case grid.Wall:
+		paint.ColorOp{Color: grid.BlueCellColor}.Add(gtx.Ops)
+	case grid.Start:
+		paint.ColorOp{Color: grid.StartCellColor}.Add(gtx.Ops)
+	case grid.Finish:
+		paint.ColorOp{Color: grid.FinishCellColor}.Add(gtx.Ops)
+	}
+	paint.PaintOp{}.Add(gtx.Ops)
+
+	// Confine the area of interest to a 100x100 rectangle.
+	pointer.Rect(image.Rect(0, 0, squareSize.X, squareSize.Y)).Add(gtx.Ops)
+	// Declare the tag.
+	pointer.InputOp{
+		Tag:   m.cellPaintTag,
+		Types: pointer.Scroll,
+	}.Add(gtx.Ops)
+
+	return layout.Dimensions{Size: squareSize}
 }

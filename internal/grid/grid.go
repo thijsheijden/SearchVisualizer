@@ -34,8 +34,3 @@ func New() {
 		}
 	}
 }
-
-// HandleInput handles input on the grid (i.e. cell clicks)
-func HandleInput() {
-
-}

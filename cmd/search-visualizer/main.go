@@ -15,8 +15,8 @@ import (
 )
 
 type (
-	D = layout.Dimensions
-	C = layout.Context
+	d = layout.Dimensions
+	c = layout.Context
 )
 
 // Some NRGBA colors
@@ -63,13 +63,14 @@ func loop(w *app.Window) error {
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			menu.HandleGridSizeChange()
+			menu.HandleInput(gtx)
+			grid.HandleInput(gtx)
 			// graphics.HandleCellClicks(gtx)
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				layout.Flexed(0.1, func(gtx C) D {
+				layout.Flexed(0.15, func(gtx c) d {
 					return menu.Display(gtx)
 				}),
-				layout.Flexed(0.9, func(gtx C) D {
+				layout.Flexed(0.85, func(gtx c) d {
 					return grid.Display(gtx)
 				}),
 			)
