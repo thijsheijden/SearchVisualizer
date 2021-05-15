@@ -9,11 +9,14 @@ import "search-visualizer/internal/grid"
 // Neighbours returns the neighbours for a position
 func Neighbours(position grid.Point) []*grid.Cell {
 	neighbours := make([]*grid.Cell, 0)
-	// Look at the (potential) 8 neighbours for this position
+	// Get the 4 possible neighbours (non-diagonals)
 	for i := -1; i <= 1; i++ {
 		for j := -1; j <= 1; j++ {
-			if n := grid.GetCell(grid.Point{X: position.X + i, Y: position.Y + j}); n != nil && !(i == 0 && j == 0) {
-				neighbours = append(neighbours, n)
+			// Make sure this is not the cell we are, or a diagonal cell
+			if !(i == 0 && j == 0) && !(i != 0 && j != 0) {
+				if n := grid.GetCell(position.X+i, position.Y+j); n != nil {
+					neighbours = append(neighbours, n)
+				}
 			}
 		}
 	}
