@@ -46,7 +46,9 @@ func (a *Algorithm) Next() bool {
 		var prev *grid.Cell
 		prev = closest.Cell
 		for {
-			a.shortestPaths[prev].from.CellType = grid.Path
+			if a.shortestPaths[prev].from.CellType != grid.Start {
+				a.shortestPaths[prev].from.CellType = grid.Path
+			}
 			prev = a.shortestPaths[prev].from
 			if prev == grid.GetStartCell() {
 				break
@@ -74,8 +76,6 @@ func (a *Algorithm) Next() bool {
 					c.cost = newCost
 					c.from = closest.Cell
 				}
-
-				// TODO: Update this in the heap
 			} else {
 				// No path to this cell yet, create one
 				a.shortestPaths[neighbour] = &path{
@@ -88,7 +88,14 @@ func (a *Algorithm) Next() bool {
 	}
 
 	a.visited[closest.Cell] = true
-	closest.Cell.CellType = grid.Visited
+	if closest.Cell.CellType != grid.Start {
+		closest.Cell.CellType = grid.Visited
+	}
+
+	// Check if there is still any unvisited cell
+	if len(a.priorityQueue) == 0 {
+		return true
+	}
 	return false
 }
 

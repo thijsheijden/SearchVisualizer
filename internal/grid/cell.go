@@ -55,7 +55,7 @@ var (
 	BlueCellColor    = color.NRGBA{R: 0x40, G: 0x40, B: 0xC0, A: 0xFF}
 
 	ShortestPathColor = color.NRGBA{R: 0x72, G: 0xd3, B: 0xfe, A: 0xFF}
-	VisitedColor      = color.NRGBA{R: 0xF9, G: 0xF9, B: 0xF9, A: 0xFF}
+	VisitedColor      = color.NRGBA{R: 0xD3, G: 0xD3, B: 0xD3, A: 0xFF}
 )
 
 // reset resets all attributes of a cell

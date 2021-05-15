@@ -101,7 +101,8 @@ func loop(w *app.Window) error {
 
 func algoControl(start bool) {
 	if start {
+		grid.Reset()
 		algorithm = dijkstra.Create()
-		algoTicker.Reset(time.Millisecond * 100)
+		algoTicker.Reset(time.Second * 1)
 	}
 }

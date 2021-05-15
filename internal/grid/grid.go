@@ -63,3 +63,12 @@ func GetStartCell() *Cell {
 	}
 	return gridInstance.Cells[1+(Columns*1)]
 }
+
+// Reset sets all cells back to default (except start, finish and walls)
+func Reset() {
+	for _, c := range gridInstance.Cells {
+		if c.CellType == Visited || c.CellType == Path {
+			c.CellType = Empty
+		}
+	}
+}

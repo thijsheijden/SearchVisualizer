@@ -50,7 +50,7 @@ func (m *menu) displayAllInputsWithLabels(gtx c) d {
 			return m.displayInputWithLabel(gtx, m.gridRowsInputLabel, "Rows", m.gridRowsInput)
 		}),
 		layout.Flexed(1, func(gtx c) d {
-			return m.displayInputWithLabel(gtx, m.tickSpeedInputLabel, "Tick speed", m.tickSpeedInput)
+			return m.displayInputWithLabel(gtx, m.tickSpeedInputLabel, "Tick speed (ms)", m.tickSpeedInput)
 		}),
 	)
 }
