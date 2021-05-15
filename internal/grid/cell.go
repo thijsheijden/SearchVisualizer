@@ -49,10 +49,13 @@ func (t CellType) String() string {
 
 // Possible cell colors
 var (
-	DefaultCellColor = color.NRGBA{R: 0xEC, G: 0xEC, B: 0xEC, A: 0xFF}
+	DefaultCellColor = color.NRGBA{R: 0xED, G: 0xED, B: 0xED, A: 0xFF}
 	FinishCellColor  = color.NRGBA{R: 0x77, G: 0xDD, B: 0x77, A: 0xFF}
 	StartCellColor   = color.NRGBA{R: 0xC0, G: 0x40, B: 0x40, A: 0xFF}
 	BlueCellColor    = color.NRGBA{R: 0x40, G: 0x40, B: 0xC0, A: 0xFF}
+
+	ShortestPathColor = color.NRGBA{R: 0x72, G: 0xd3, B: 0xfe, A: 0xFF}
+	VisitedColor      = color.NRGBA{R: 0xF9, G: 0xF9, B: 0xF9, A: 0xFF}
 )
 
 // reset resets all attributes of a cell

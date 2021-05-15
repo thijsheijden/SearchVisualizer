@@ -50,7 +50,7 @@ func SetCellPaintType(t *CellType) {
 
 // GetCell gets a cell from the grid
 func GetCell(position Point) *Cell {
-	if position.X < Columns && position.Y < Rows {
+	if position.X < Columns && position.Y < Rows && position.X >= 0 && position.Y >= 0 {
 		return gridInstance.Cells[position.X+(Columns*position.Y)]
 	}
 	return nil
@@ -61,5 +61,5 @@ func GetStartCell() *Cell {
 	if gridInstance.start != nil {
 		return gridInstance.Cells[gridInstance.start.X+(Columns*gridInstance.start.Y)]
 	}
-	return nil
+	return gridInstance.Cells[1+(Columns*1)]
 }

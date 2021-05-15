@@ -12,7 +12,7 @@ func Neighbours(position grid.Point) []*grid.Cell {
 	// Look at the (potential) 8 neighbours for this position
 	for i := -1; i <= 1; i++ {
 		for j := -1; j <= 1; j++ {
-			if n := grid.GetCell(grid.Point{X: position.X + i, Y: position.Y + j}); n != nil {
+			if n := grid.GetCell(grid.Point{X: position.X + i, Y: position.Y + j}); n != nil && !(i == 0 && j == 0) {
 				neighbours = append(neighbours, n)
 			}
 		}

@@ -6,6 +6,9 @@ import (
 	"os"
 	"search-visualizer/internal/grid"
 	"search-visualizer/internal/menu"
+	"search-visualizer/internal/search"
+	"search-visualizer/internal/search/dijkstra"
+	"time"
 
 	"gioui.org/app"
 	"gioui.org/io/system"
@@ -53,33 +56,52 @@ func main() {
 	app.Main()
 }
 
+var algoTicker *time.Ticker
+var algorithm search.Algorithm
+
 func loop(w *app.Window) error {
+	algoTicker = time.NewTicker(time.Second * 1)
+	algoTicker.Stop()
 	var ops op.Ops
-	menu.New()
 	grid.New()
+	menu.New(algoControl)
 	menu.PassCellTypeToGrid()
-	// a := dijkstra.Create()
-	for e := range w.Events() {
-		switch e := e.(type) {
-		case system.DestroyEvent:
-			return e.Err
-		case system.FrameEvent:
-			// a.Next()
-			gtx := layout.NewContext(&ops, e)
-			menu.HandleInput(gtx)
-			grid.HandleInput(gtx)
-			// graphics.HandleCellClicks(gtx)
-			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				layout.Flexed(0.15, func(gtx c) d {
-					return menu.Display(gtx)
-				}),
-				layout.Flexed(0.85, func(gtx c) d {
-					return grid.Display(gtx)
-				}),
-			)
-			e.Frame(gtx.Ops)
+	for {
+		select {
+		case e := <-w.Events():
+			switch e := e.(type) {
+			case system.DestroyEvent:
+				algoTicker.Stop()
+				return e.Err
+			case system.FrameEvent:
+				gtx := layout.NewContext(&ops, e)
+				menu.HandleInput(gtx)
+				grid.HandleInput(gtx)
+				// graphics.HandleCellClicks(gtx)
+				layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Flexed(0.15, func(gtx c) d {
+						return menu.Display(gtx)
+					}),
+					layout.Flexed(0.85, func(gtx c) d {
+						return grid.Display(gtx)
+					}),
+				)
+				e.Frame(gtx.Ops)
+			}
+		case <-algoTicker.C:
+			finished := algorithm.Next()
+			w.Invalidate()
+
+			if finished {
+				algoTicker.Stop()
+			}
 		}
 	}
+}
 
-	return nil
+func algoControl(start bool) {
+	if start {
+		algorithm = dijkstra.Create()
+		algoTicker.Reset(time.Millisecond * 100)
+	}
 }

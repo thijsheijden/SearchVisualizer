@@ -12,6 +12,7 @@ import (
 func HandleInput(gtx c) {
 	handleGridSizeChange()
 	handleCellPaintTypeChange(gtx)
+	handleButtonInput()
 }
 
 func handleCellPaintTypeChange(gtx c) {
@@ -68,4 +69,10 @@ func checkInputIsValid(input string) (bool, int) {
 		return false, 0
 	}
 	return true, intValue
+}
+
+func handleButtonInput() {
+	for range topMenu.startButton.Clicks() {
+		topMenu.algoControlFunc(true)
+	}
 }

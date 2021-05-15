@@ -2,6 +2,7 @@ package dijkstra
 
 import (
 	"container/heap"
+	"log"
 	"search-visualizer/internal/grid"
 	"search-visualizer/internal/search"
 )
@@ -9,7 +10,8 @@ import (
 // Algorithm implements Dijkstra's shortest path algorithm
 type Algorithm struct {
 	priorityQueue priorityQueue
-	shortestPaths map[*grid.Cell]path
+	shortestPaths map[*grid.Cell]*path
+	visited       map[*grid.Cell]bool
 }
 
 type path struct {
@@ -22,38 +24,72 @@ func Create() *Algorithm {
 	// Create the Algorithm object, containing the priority queue
 	current := Algorithm{
 		priorityQueue: make(priorityQueue, 0),
-		shortestPaths: make(map[*grid.Cell]path),
+		shortestPaths: make(map[*grid.Cell]*path),
+		visited:       make(map[*grid.Cell]bool),
 	}
 
-	// Push the start node to the priority queue with a cost of 0
-	heap.Push(&current.priorityQueue, &item{Cost: 0, Cell: grid.GetCell(grid.Point{X: 1, Y: 1})})
+	// Push the starting node into the heap with cost 0
+	heap.Push(&current.priorityQueue, &item{Cost: 0, Cell: grid.GetStartCell()})
 
 	return &current
 }
 
 // Next performs the next algorithm step
-func (a *Algorithm) Next() {
-	// Get the closest node from the priority queue
-	top := heap.Pop(&a.priorityQueue).(*item)
+// Returns a boolean denoting whether the algo is finished
+func (a *Algorithm) Next() bool {
+	// Get the closest node from the heap
+	closest := heap.Pop(&a.priorityQueue).(*item)
 
-	// Mark this node as visited
-	if !(top.Cell.CellType == grid.Start) {
-		top.Cell.CellType = grid.Visited
+	// If this is the finish node, stop
+	if closest.Cell.CellType == grid.Finish {
+		log.Println("Found finish")
+		var prev *grid.Cell
+		prev = closest.Cell
+		for {
+			a.shortestPaths[prev].from.CellType = grid.Path
+			prev = a.shortestPaths[prev].from
+			if prev == grid.GetStartCell() {
+				break
+			}
+		}
+		return true
 	}
 
-	// Get the neighbours for this node
-	for _, cell := range search.Neighbours(*top.Cell.Position) {
-		// Check if we already have a distance for these cells
-		if p, ok := a.shortestPaths[cell]; ok {
-			// Check if the new path is shorter
-			if p.cost < top.Cost+1 {
-				// If this is the case, update the shortest path
-				p := a.shortestPaths[cell]
-				p.cost = top.Cost + 1
-				a.shortestPaths[cell] = p
+	newCost := closest.Cost + 1
+
+	// Go over all its neighbours
+	for _, neighbour := range search.Neighbours(*closest.Cell.Position) {
+		// Check if this cell can be visited
+		if neighbour.CellType == grid.Wall {
+			continue
+		}
+
+		// Check if they have been visited
+		if !a.visited[neighbour] {
+			// If not, check if this new path is shorter than the one in the queue (if there is already a path)
+			if c, ok := a.shortestPaths[neighbour]; ok {
+				// Check if this path is shorter
+				if newCost < c.cost {
+					// Update path
+					c.cost = newCost
+					c.from = closest.Cell
+				}
+
+				// TODO: Update this in the heap
+			} else {
+				// No path to this cell yet, create one
+				a.shortestPaths[neighbour] = &path{
+					from: closest.Cell,
+					cost: newCost,
+				}
+				heap.Push(&a.priorityQueue, &item{Cost: newCost, Cell: neighbour})
 			}
 		}
 	}
+
+	a.visited[closest.Cell] = true
+	closest.Cell.CellType = grid.Visited
+	return false
 }
 
 // Stop stops the algorithm

@@ -76,6 +76,10 @@ func colorBox(gtx c, size image.Point, r int, c int) d {
 		paint.ColorOp{Color: StartCellColor}.Add(gtx.Ops)
 	case Finish:
 		paint.ColorOp{Color: FinishCellColor}.Add(gtx.Ops)
+	case Path:
+		paint.ColorOp{Color: ShortestPathColor}.Add(gtx.Ops)
+	case Visited:
+		paint.ColorOp{Color: VisitedColor}.Add(gtx.Ops)
 	}
 	paint.PaintOp{}.Add(gtx.Ops)
 

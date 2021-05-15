@@ -35,9 +35,7 @@ func (pq *priorityQueue) Push(x interface{}) {
 }
 
 func (pq priorityQueue) Swap(i, j int) {
-	if !(i >= len(pq) || j >= len(pq)) {
-		pq[i], pq[j] = pq[j], pq[i]
-		pq[i].Index = i
-		pq[j].Index = j
-	}
+	pq[i], pq[j] = pq[j], pq[i]
+	pq[i].Index = i
+	pq[j].Index = j
 }

@@ -27,11 +27,14 @@ func Display(gtx c) d {
 	// Uniformly inset the entire menu by 8 dp
 	return layout.UniformInset(unit.Dp(8)).Layout(gtx, func(gtx c) d {
 		return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
-			layout.Flexed(1, func(gtx c) d {
+			layout.Flexed(0.4, func(gtx c) d {
 				return topMenu.displayAllInputsWithLabels(gtx)
 			}),
-			layout.Flexed(1, func(gtx c) d {
+			layout.Flexed(0.4, func(gtx c) d {
 				return topMenu.displayCellPaintSquare(gtx)
+			}),
+			layout.Flexed(0.2, func(gtx c) d {
+				return topMenu.displayStartStopButtons(gtx)
 			}),
 		)
 
@@ -137,4 +140,26 @@ func (m *menu) colorBox(gtx c, size image.Point) d {
 	}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: squareSize}
+}
+
+func (m *menu) displayStartStopButtons(gtx c) d {
+	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+		layout.Flexed(1, func(gtx c) d {
+			return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx c) d {
+				return m.displayButton(gtx, m.startButton, "Start", grid.FinishCellColor)
+			})
+		}),
+		layout.Flexed(1, func(gtx c) d {
+			return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx c) d {
+				return m.displayButton(gtx, m.stopButton, "Stop", grid.StartCellColor)
+			})
+		}),
+	)
+}
+
+func (m *menu) displayButton(gtx c, button *widget.Clickable, buttonText string, color color.NRGBA) d {
+	b := material.Button(m.theme, button, buttonText)
+	b.Background = color
+	b.TextSize = unit.Dp(14)
+	return b.Layout(gtx)
 }

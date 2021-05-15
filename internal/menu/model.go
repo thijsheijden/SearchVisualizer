@@ -21,12 +21,19 @@ type menu struct {
 	cellPaintTag       *bool
 	cellPaintType      grid.CellType
 	cellPaintTypeLabel *widget.Label
+
+	// Start stop buttons
+	startButton *widget.Clickable
+	stopButton  *widget.Clickable
+
+	// Algorithm control func in main
+	algoControlFunc func(start bool)
 }
 
 var topMenu menu
 
 // New creates a new top menu
-func New() {
+func New(algoControlFunc func(start bool)) {
 	topMenu = menu{
 		theme:                 material.NewTheme(gofont.Collection()),
 		gridColumnsInput:      new(widget.Editor),
@@ -38,6 +45,9 @@ func New() {
 		cellPaintTag:          new(bool),
 		cellPaintType:         grid.Wall,
 		cellPaintTypeLabel:    new(widget.Label),
+		startButton:           new(widget.Clickable),
+		stopButton:            new(widget.Clickable),
+		algoControlFunc:       algoControlFunc,
 	}
 }
 
