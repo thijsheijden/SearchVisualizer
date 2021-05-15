@@ -37,6 +37,7 @@ func handleGridSizeChange() {
 				// Update the grid number of columns
 				grid.Columns = val
 				grid.New()
+				PassCellTypeToGrid()
 			}
 		}
 	}
@@ -50,6 +51,7 @@ func handleGridSizeChange() {
 				// Update the grid number of rows
 				grid.Rows = val
 				grid.New()
+				PassCellTypeToGrid()
 			}
 		}
 	}

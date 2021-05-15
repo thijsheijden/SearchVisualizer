@@ -6,7 +6,6 @@ import (
 	"os"
 	"search-visualizer/internal/grid"
 	"search-visualizer/internal/menu"
-	"search-visualizer/internal/search/dijkstra"
 
 	"gioui.org/app"
 	"gioui.org/io/system"
@@ -59,13 +58,13 @@ func loop(w *app.Window) error {
 	menu.New()
 	grid.New()
 	menu.PassCellTypeToGrid()
-	a := dijkstra.Create()
+	// a := dijkstra.Create()
 	for e := range w.Events() {
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:
-			a.Next()
+			// a.Next()
 			gtx := layout.NewContext(&ops, e)
 			menu.HandleInput(gtx)
 			grid.HandleInput(gtx)
