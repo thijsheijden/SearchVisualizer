@@ -17,12 +17,16 @@ func HandleInput(gtx c) {
 
 func handleCellPaintTypeChange(gtx c) {
 	for _, e := range gtx.Events(topMenu.cellPaintTag) {
-		if _, ok := e.(pointer.Event); ok {
-			// Change the cell type
-			topMenu.cellPaintType++
-			if topMenu.cellPaintType > 3 {
-				topMenu.cellPaintType = 0
+		if e, ok := e.(pointer.Event); ok {
+			switch e.Type {
+			case pointer.Scroll:
+				// Change the cell type
+				topMenu.cellPaintType++
+				if topMenu.cellPaintType > 3 {
+					topMenu.cellPaintType = 0
+				}
 			}
+
 		}
 	}
 }

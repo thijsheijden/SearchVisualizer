@@ -88,7 +88,7 @@ func colorBox(gtx c, size image.Point, r int, c int) d {
 	// Declare the tag.
 	pointer.InputOp{
 		Tag:   gridInstance.Cells[c+(Columns*r)].Tag,
-		Types: pointer.Press,
+		Types: pointer.Press | pointer.Enter | pointer.Release,
 	}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: size}

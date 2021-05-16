@@ -7,7 +7,7 @@ import (
 	"search-visualizer/internal/grid"
 	"search-visualizer/internal/menu"
 	"search-visualizer/internal/search"
-	"search-visualizer/internal/search/dijkstra"
+	"search-visualizer/internal/search/astar"
 	"time"
 
 	"gioui.org/app"
@@ -102,7 +102,7 @@ func loop(w *app.Window) error {
 func algoControl(start bool) {
 	if start {
 		grid.Reset()
-		algorithm = dijkstra.Create()
-		algoTicker.Reset(time.Second * 1)
+		algorithm = astar.Create()
+		algoTicker.Reset(time.Millisecond * 100)
 	}
 }

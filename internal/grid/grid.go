@@ -6,6 +6,7 @@ type Grid struct {
 	start            *Point    // The starting point
 	finish           *Point    // The finishing point
 	CurrentlyPlacing *CellType // The cell type we are currently placing down
+	Dragging         bool      // Whether we are currently dragging
 }
 
 // Grid variables
@@ -62,6 +63,10 @@ func GetStartCell() *Cell {
 		return gridInstance.Cells[gridInstance.start.X+(Columns*gridInstance.start.Y)]
 	}
 	return gridInstance.Cells[1+(Columns*1)]
+}
+
+func GetFinishCell() Point {
+	return *gridInstance.Cells[gridInstance.finish.X+(Columns*gridInstance.finish.Y)].Position
 }
 
 // Reset sets all cells back to default (except start, finish and walls)
