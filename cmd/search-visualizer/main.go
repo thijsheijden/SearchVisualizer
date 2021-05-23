@@ -105,4 +105,8 @@ func algoControl(start bool) {
 		algorithm = astar.Create()
 		algoTicker.Reset(time.Millisecond * 100)
 	}
+
+	if !start {
+		algoTicker.Stop()
+	}
 }
