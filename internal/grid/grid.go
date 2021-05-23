@@ -1,5 +1,10 @@
 package grid
 
+import (
+	"math/rand"
+	"time"
+)
+
 // A Grid contains the cells and keeps track of the start and finish cells
 type Grid struct {
 	Cells            []*Cell   // The cells making up the grid
@@ -42,6 +47,19 @@ func New() {
 			gridInstance.Cells[col+(Columns*row)] = &cell
 		}
 	}
+
+	// Set random points as start and finish
+	rand.Seed(time.Now().Unix())
+
+	randomStart := rand.Int() % len(gridInstance.Cells)
+	randomFinish := rand.Int() % len(gridInstance.Cells)
+
+	gridInstance.Cells[randomStart].CellType = Start
+	gridInstance.Cells[randomFinish].CellType = Finish
+
+	// Set these values in the gridInstance as well
+	gridInstance.start = gridInstance.Cells[randomStart].Position
+	gridInstance.finish = gridInstance.Cells[randomFinish].Position
 }
 
 // SetCellPaintType sets the type of cell that currently can be placed with the pointer

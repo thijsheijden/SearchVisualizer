@@ -47,7 +47,7 @@ var (
 
 func main() {
 	go func() {
-		w := app.NewWindow(app.Size(unit.Px(1024), unit.Px(800)))
+		w := app.NewWindow(app.Size(unit.Px(1500), unit.Px(1500)))
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
@@ -66,6 +66,7 @@ func loop(w *app.Window) error {
 	grid.New()
 	menu.New(algoControl)
 	menu.PassCellTypeToGrid()
+	algorithm = astar.Create()
 	for {
 		select {
 		case e := <-w.Events():
@@ -94,19 +95,23 @@ func loop(w *app.Window) error {
 
 			if finished {
 				algoTicker.Stop()
+				menu.ToggleAlgorithmRunning()
 			}
 		}
 	}
 }
 
-func algoControl(start bool) {
-	if start {
+func algoControl(command menu.ButtonCommand) {
+	log.Println(command)
+	switch command {
+	case menu.Start:
+		algoTicker.Reset(time.Millisecond * 100)
+	case menu.Pause:
+		algoTicker.Stop()
+	case menu.Reset:
 		grid.Reset()
 		algorithm = astar.Create()
 		algoTicker.Reset(time.Millisecond * 100)
-	}
-
-	if !start {
-		algoTicker.Stop()
+		menu.ToggleAlgorithmRunning()
 	}
 }

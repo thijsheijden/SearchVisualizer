@@ -76,7 +76,17 @@ func checkInputIsValid(input string) (bool, int) {
 }
 
 func handleButtonInput() {
-	for range topMenu.startButton.Clicks() {
-		topMenu.algoControlFunc(true)
+	for range topMenu.startPauseButton.Clicks() {
+		if topMenu.algorithmRunning {
+			topMenu.algoControlFunc(Pause)
+		} else {
+			topMenu.algoControlFunc(Start)
+		}
+
+		topMenu.algorithmRunning = !topMenu.algorithmRunning
+	}
+
+	for range topMenu.resetButton.Clicks() {
+		topMenu.algoControlFunc(Reset)
 	}
 }

@@ -146,15 +146,22 @@ func (m *menu) displayStartStopButtons(gtx c) d {
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 		layout.Flexed(1, func(gtx c) d {
 			return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx c) d {
-				return m.displayButton(gtx, m.startButton, "Start", grid.FinishCellColor)
+				return m.displayStartPauseButton(gtx)
 			})
 		}),
 		layout.Flexed(1, func(gtx c) d {
 			return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx c) d {
-				return m.displayButton(gtx, m.stopButton, "Stop", grid.StartCellColor)
+				return m.displayButton(gtx, m.resetButton, "Reset", grid.StartCellColor)
 			})
 		}),
 	)
+}
+
+func (m *menu) displayStartPauseButton(gtx c) d {
+	if m.algorithmRunning {
+		return m.displayButton(gtx, m.startPauseButton, "Pause", pauseButtonColor)
+	}
+	return m.displayButton(gtx, m.startPauseButton, "Start", startButtonColor)
 }
 
 func (m *menu) displayButton(gtx c, button *widget.Clickable, buttonText string, color color.NRGBA) d {

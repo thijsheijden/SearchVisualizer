@@ -69,13 +69,14 @@ func (a *Algorithm) Next() bool {
 
 		// Calculate the new cost for this neighbour
 		// Take the cost of the current node, add 1 for the move into the neighbour
-		newCost := closest.Cost + 1
 
 		// Calculate the manhattan distance to the finish node
 		manhattan := math.Abs(float64(neighbour.Position.X-a.finish.X)) + math.Abs(float64(neighbour.Position.Y-a.finish.Y))
 
 		// Add the manhattan distance to the cost
-		newCost += int(manhattan)
+		newCost := int(manhattan)
+
+		log.Println(newCost)
 
 		// Check if they have been visited
 		if !a.visited[neighbour] {
